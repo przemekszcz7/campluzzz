@@ -1,0 +1,6 @@
+{
+  "name": "Campluzzz Tawerna",
+  "description": "Strona internetowa pola campingowego i tawerny Campluzzz w Zarzeczu - jezioro Żywieckie, Zarzecze. Rodzinna atmosfera, malownicze widoki i pyszne jedzenie.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
