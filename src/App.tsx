@@ -42,12 +42,6 @@ export default function App() {
   const [electricity, setElectricity] = useState(false);
   const [dogs, setDogs] = useState(0);
 
-  // Form states
-  const [name, setName] = useState('');
-  const [message, setMessage] = useState('');
-  const [phoneVal, setPhoneVal] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-
   // Filtered photos based on active tab
   const filteredPhotos = useMemo(() => {
     if (activeTab === 'all') return photos;
@@ -80,23 +74,19 @@ export default function App() {
       camper: 'Camper',
       caravan: 'Przyczepa'
     };
-    const generatedText = `Dzień dobry, chciałam/em zapytać o dostępność terminu.\nWycena z kalkulatora:\n- Długość pobytu: ${nights} nocy\n- ${adults} os. dorosłe, ${children} dzieci\n- Miejsce: ${accomWords[accommodation]}\n- Pojazdy: ${cars}, Psy: ${dogs}\n- Prąd: ${electricity ? 'Tak' : 'Nie'}\n- Szacunkowy koszt: ${totalEstimation} PLN\nNajbardziej interesuje nas termin: `;
-    setMessage(generatedText);
-    const element = document.getElementById('kontakt');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const handleSubmitContact = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setName('');
-      setPhoneVal('');
-      setMessage('');
-    }, 5000);
+    const generatedSubject = encodeURIComponent('Zapytanie o rezerwację pola namiotowego Campluzzz');
+    const generatedBody = encodeURIComponent(
+      `Dzień dobry,\n\nchciał(a)bym zapytać o dostępność terminu.\n\nWycena na podstawie kalkulatora:\n` +
+      `- Długość pobytu: ${nights} nocy\n` +
+      `- Osoby: ${adults} dorosłe, ${children} dzieci\n` +
+      `- Sposób nocowania: ${accomWords[accommodation]}\n` +
+      `- Pojazdy (samochody): ${cars}\n` +
+      `- Psy: ${dogs}\n` +
+      `- Dedykowane przyłącze prądu: ${electricity ? 'Tak' : 'Nie'}\n` +
+      `- Szacunkowy koszt: ${totalEstimation} PLN\n\n` +
+      `Sugerowany termin pobytu (od - do): \n\nPozdrawiam,`
+    );
+    window.location.href = `mailto:czulmartyna@gmail.com?subject=${generatedSubject}&body=${generatedBody}`;
   };
 
   return (
@@ -168,11 +158,11 @@ export default function App() {
       <header className="bg-dark text-light min-h-[85vh] flex flex-col justify-between py-12 md:py-20 relative overflow-hidden">
         
         {/* Editorial visual subtle background texture */}
-        <div className="absolute right-0 bottom-0 w-full md:w-[48%] h-2/3 md:h-full opacity-30 md:opacity-90 transition-opacity">
+        <div className="absolute right-0 bottom-0 w-full md:w-[48%] h-full opacity-20 md:opacity-90 transition-opacity">
           <img 
             src="https://i.ibb.co/Y4dJgS4k/486672606-1178516674282079-675605599474580592-n.jpg"
             alt="Zachód słońca nad polem namiotowym Zarzecze"
-            className="w-full h-full object-cover select-none"
+            className="w-full h-full object-cover object-[65%_center] md:object-center select-none"
             loading="eager"
             referrerPolicy="no-referrer"
           />
@@ -796,7 +786,7 @@ export default function App() {
                     {totalEstimation} <span className="text-xl font-normal text-dark/60">PLN</span>
                   </div>
                   <div className="text-xs text-dark/60 mt-1 font-light">
-                    Suma za {nights} noc(y) pobytu na polu.
+                    Suma za {nights} noc(y). Przycisk prześle gotowe zapytanie e-mail.
                   </div>
                 </div>
 
@@ -804,7 +794,7 @@ export default function App() {
                   onClick={handleInquiryAutoFill}
                   className="bg-dark text-light px-8 py-4 font-medium text-sm hover:bg-dark/85 transition-all w-full sm:w-auto text-center animate-pulse"
                 >
-                  Przenieś dane do pytania →
+                  Wyślij e-mail z wyceną →
                 </button>
               </div>
 
@@ -890,14 +880,14 @@ export default function App() {
         </div>
       </section>
 
-      {/* CONTACT & DIRECTIVES - TWO COLUMNS, MAX-WIDTH 700PX EQUIV */}
+      {/* CONTACT & DIRECTIVES - THREE COLUMN DETAILS */}
       <section id="kontakt" className="py-24 md:py-36 bg-warm border-t border-dark/10">
         <div className="max-w-5xl mx-auto px-6 lg:px-12">
           
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+          <div className="space-y-16">
             
-            {/* Left side details */}
-            <div className="lg:col-span-12 mb-8">
+            {/* Header */}
+            <div>
               <span className="font-mono text-xs uppercase tracking-[0.15em] text-dark/60 block">
                 Złapmy kontakt
               </span>
@@ -907,127 +897,46 @@ export default function App() {
               </h2>
             </div>
 
-            <div className="lg:col-span-5 space-y-12">
-              
-              <div className="space-y-8 font-light text-base text-dark">
-                <p className="leading-relaxed">
-                  Chcesz sprawdzić pogodę na polu? Zapytać o wolne parcele? A może zamówić świeżą smażoną rybkę dla większej grupy? Dzwoń śmiało lub pisz – odpowiadamy sprawnie i rzeczowo.
-                </p>
+            <div className="space-y-12">
+              <p className="leading-relaxed text-base md:text-lg text-dark/90 font-light max-w-3xl">
+                Chcesz sprawdzić pogodę na polu? Zapytać o wolne parcele? A może zamówić świeżą smażoną rybkę dla większej grupy? Dzwoń śmiało lub pisz – odpowiadamy sprawnie i rzeczowo.
+              </p>
 
-                {/* Clean inline text block for numbers */}
-                <div className="space-y-6 pt-4 border-t border-dark/10">
-                  <div className="flex gap-4 items-start">
-                    <Phone className="w-5 h-5 opacity-70 mt-1" />
-                    <div>
-                      <span className="font-mono text-[10px] uppercase tracking-wider text-dark/50 block">Telefon:</span>
-                      <a href="tel:+48501009722" className="font-mono text-lg font-medium hover:underline">
-                        501 009 722
-                      </a>
-                    </div>
+              {/* Clean layout block for numbers */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-12 border-t border-dark/10">
+                <div className="flex gap-4 items-start">
+                  <Phone className="w-5 h-5 opacity-70 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-dark/50 block">Telefon:</span>
+                    <a href="tel:+48501009722" className="font-mono text-lg font-medium hover:underline">
+                      501 009 722
+                    </a>
                   </div>
+                </div>
 
-                  <div className="flex gap-4 items-start">
-                    <Mail className="w-5 h-5 opacity-70 mt-1" />
-                    <div>
-                      <span className="font-mono text-[10px] uppercase tracking-wider text-dark/50 block">E-mail założycielek:</span>
-                      <a href="mailto:czulmartyna@gmail.com" className="font-mono text-lg font-medium hover:underline">
-                        czulmartyna@gmail.com
-                      </a>
-                    </div>
+                <div className="flex gap-4 items-start">
+                  <Mail className="w-5 h-5 opacity-70 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-dark/50 block">E-mail założycielek:</span>
+                    <a href="mailto:czulmartyna@gmail.com" className="font-mono text-lg font-medium hover:underline">
+                      czulmartyna@gmail.com
+                    </a>
                   </div>
+                </div>
 
-                  <div className="flex gap-4 items-start">
-                    <MapPin className="w-5 h-5 opacity-70 mt-1" />
-                    <div>
-                      <span className="font-mono text-[10px] uppercase tracking-wider text-dark/50 block">Adres do nawigacji GPS:</span>
-                      <p className="font-medium text-base">
-                        ul. Żeglarska 1, Zarzecze 34-326
-                      </p>
-                      <span className="text-xs text-dark/60 block mt-1">
-                        Tuż przy tafli Jeziora Żywieckiego, piękne widoki na góry.
-                      </span>
-                    </div>
+                <div className="flex gap-4 items-start">
+                  <MapPin className="w-5 h-5 opacity-70 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-dark/50 block">Adres do nawigacji GPS:</span>
+                    <p className="font-medium text-base leading-snug">
+                      ul. Żeglarska 1, Zarzecze 34-326
+                    </p>
+                    <span className="text-xs text-dark/60 block mt-1">
+                      Tuż przy tafli Jeziora Żywieckiego, piękne widoki na góry.
+                    </span>
                   </div>
                 </div>
               </div>
-
-            </div>
-
-            {/* Right side interactive Contact form */}
-            <div className="lg:col-span-7 bg-light p-8 md:p-12">
-              
-              <h3 className="font-display font-medium text-xl mb-6">Napisz wiadomość bezpośrednią</h3>
-
-              {submitted ? (
-                <div className="text-center py-12 space-y-4">
-                  <div className="w-12 h-12 rounded-full border border-dark/20 flex items-center justify-center mx-auto text-dark mb-4">
-                    <Check className="w-6 h-6" />
-                  </div>
-                  <h4 className="font-display font-bold text-lg">Wiadomość została wysłana</h4>
-                  <p className="text-sm font-light text-dark/75 max-w-sm mx-auto">
-                    Dziękujemy za kontakt! Mama lub córka odezwą się do Ciebie na podany numer telefonu w najkrótszym możliwym czasie. Do zobaczenia!
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmitContact} className="space-y-6">
-                  
-                  <div className="space-y-1">
-                    <label className="block text-xs font-mono uppercase tracking-wider text-dark/60">
-                      Twoje imię / nazwisko *
-                    </label>
-                    <input 
-                      type="text" 
-                      required 
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Napisz jak się nazywasz"
-                      className="w-full bg-warm text-dark py-3.5 px-4 font-normal text-sm focus:outline-none focus:ring-1 focus:ring-dark"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block text-xs font-mono uppercase tracking-wider text-dark/60">
-                      Mój numer telefonu lub email *
-                    </label>
-                    <input 
-                      type="text" 
-                      required 
-                      value={phoneVal}
-                      onChange={(e) => setPhoneVal(e.target.value)}
-                      placeholder="Np. 501 000 000 lub nazwa@poczta.pl"
-                      className="w-full bg-warm text-dark py-3.5 px-4 font-normal text-sm focus:outline-none focus:ring-1 focus:ring-dark"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block text-xs font-mono uppercase tracking-wider text-dark/60">
-                      Treść pytania lub informacja o rezerwacji
-                    </label>
-                    <textarea 
-                      rows={5}
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      placeholder="Napisz czym jesteś zainteresowany, a my zajmiemy się całą resztą"
-                      className="w-full bg-warm text-dark py-3.5 px-4 font-normal text-sm focus:outline-none focus:ring-1 focus:ring-dark resize-none"
-                    ></textarea>
-                  </div>
-
-                  <div>
-                    <button 
-                      type="submit"
-                      className="bg-dark text-light py-4 px-10 hover:bg-dark/90 transition-all text-sm font-medium w-full flex items-center justify-center gap-2"
-                    >
-                      <span>Wyślij zapytanie bezpośrednio</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                    <span className="text-[10px] text-dark/50 block mt-2 text-center">
-                      * Przycisk z kalkulatora automatycznie generuje streszczenie parametrów pobytu.
-                    </span>
-                  </div>
-
-                </form>
-              )}
-
             </div>
 
           </div>
